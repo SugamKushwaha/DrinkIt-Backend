@@ -64,9 +64,9 @@ public class User {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
-
+ 
     @PrePersist
-    public void onCreate() {
+    public void onCreate() { 
 
         LocalDateTime now = LocalDateTime.now();
 

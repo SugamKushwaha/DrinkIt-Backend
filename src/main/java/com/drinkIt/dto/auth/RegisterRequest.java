@@ -26,4 +26,4 @@ public class RegisterRequest {
             message = "Password must contain at least 6 characters"
     )
     private String password;
-}
+} 

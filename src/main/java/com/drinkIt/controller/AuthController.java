@@ -52,7 +52,7 @@ public class AuthController {
 public ResponseEntity<?> logout(
         HttpServletResponse response
 ) {
-
+ 
     ResponseCookie cookie =
             ResponseCookie.from("drinkit-token", "")
                     .httpOnly(true)
