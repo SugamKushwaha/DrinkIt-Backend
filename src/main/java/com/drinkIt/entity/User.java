@@ -37,7 +37,7 @@ import lombok.Setter;
 @Builder
 public class User {
     
-     @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -54,13 +54,17 @@ public class User {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, unique=true)
+    @Column(nullable = false)
     private Role role;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
      private UserStatus status;
 
+     @Column(nullable = false)
+    private boolean verified;
+
+     @Column(nullable=false, updatable = false)
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;

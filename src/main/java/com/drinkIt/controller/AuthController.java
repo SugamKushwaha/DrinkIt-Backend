@@ -49,9 +49,7 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-public ResponseEntity<?> logout(
-        HttpServletResponse response
-) {
+public ResponseEntity<?> logout( HttpServletResponse response){
  
     ResponseCookie cookie =
             ResponseCookie.from("drinkit-token", "")
@@ -74,4 +72,5 @@ public ResponseEntity<?> logout(
             )
     );
 }
+            
 }

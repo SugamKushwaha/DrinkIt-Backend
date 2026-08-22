@@ -23,16 +23,14 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
- 
-    private final JwtAuthenticationFilter
-            jwtAuthenticationFilter;
 
-    private final CustomUserDetailsService
-            userDetailsService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    // ==========================
+    private final CustomUserDetailsService userDetailsService;
+
+    // =====================================================
     // PASSWORD ENCODER
-    // ==========================
+    // =====================================================
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -40,32 +38,31 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // ==========================
-    // AUTH PROVIDER
-    // ==========================
+    // =====================================================
+    // AUTHENTICATION PROVIDER
+    // =====================================================
 
     @Bean
-public AuthenticationProvider authenticationProvider() {
+    public AuthenticationProvider authenticationProvider() {
 
-    DaoAuthenticationProvider provider =
-            new DaoAuthenticationProvider(
-                    userDetailsService
-            );
+        DaoAuthenticationProvider provider =
+                new DaoAuthenticationProvider(
+                        userDetailsService
+                );
 
-    provider.setPasswordEncoder(
-            passwordEncoder()
-    );
+        provider.setPasswordEncoder(
+                passwordEncoder()
+        );
 
-    return provider;
-}
+        return provider;
+    }
 
-    // ==========================
+    // =====================================================
     // AUTHENTICATION MANAGER
-    // ==========================
+    // =====================================================
 
     @Bean
-    public AuthenticationManager
-    authenticationManager(
+    public AuthenticationManager authenticationManager(
             AuthenticationConfiguration configuration
     ) throws Exception {
 
@@ -73,21 +70,26 @@ public AuthenticationProvider authenticationProvider() {
                 .getAuthenticationManager();
     }
 
-    // ==========================
+    // =====================================================
     // SECURITY FILTER CHAIN
-    // ==========================
+    // =====================================================
 
     @Bean
-    public SecurityFilterChain
-    securityFilterChain(
+    public SecurityFilterChain securityFilterChain(
             HttpSecurity http
     ) throws Exception {
 
         http
 
-                .csrf(csrf ->
-                        csrf.disable()
-                )
+                // -------------------------------------------------
+                // CSRF
+                // -------------------------------------------------
+
+                .csrf(csrf -> csrf.disable())
+
+                // -------------------------------------------------
+                // STATELESS JWT
+                // -------------------------------------------------
 
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(
@@ -95,77 +97,73 @@ public AuthenticationProvider authenticationProvider() {
                         )
                 )
 
+                // -------------------------------------------------
+                // AUTHORIZATION
+                // -------------------------------------------------
+
                 .authorizeHttpRequests(auth -> auth
 
-                        // ==================
-                        // PUBLIC
-                        // ==================
-
+                        // Authentication APIs
                         .requestMatchers(
                                 "/api/auth/**"
                         ).permitAll()
 
+                        // Current logged-in user
+                        .requestMatchers(
+                                "/api/users/me"
+                        ).authenticated()
+
+                        // Products
                         .requestMatchers(
                                 "/api/products/**"
                         ).permitAll()
 
-                        // ==================
-                        // ADMIN
-                        // ==================
-
+                        // Admin
                         .requestMatchers(
                                 "/api/admin/**"
                         ).hasRole("ADMIN")
 
-                        // ==================
-                        // VENDOR
-                        // ==================
-
+                        // Vendor
                         .requestMatchers(
                                 "/api/vendor/**"
                         ).hasRole("VENDOR")
 
-                        // ==================
-                        // DELIVERY PARTNER
-                        // ==================
-
+                        // Delivery
                         .requestMatchers(
                                 "/api/delivery/**"
-                        ).hasRole(
-                                "DELIVERY_PARTNER"
-                        )
+                        ).hasRole("DELIVERY_PARTNER")
 
-                        // ==================
-                        // CUSTOMER
-                        // ==================
-
+                        // Customer
                         .requestMatchers(
                                 "/api/customer/**"
                         ).hasRole("CUSTOMER")
 
-                        // ==================
-                        // APPLICATIONS
-                        // ==================
-
+                        // Vendor requests
                         .requestMatchers(
                                 "/api/vendor-requests/**"
                         ).authenticated()
 
+                        // Delivery requests
                         .requestMatchers(
                                 "/api/delivery-partner-requests/**"
                         ).authenticated()
 
-                        // ==================
-                        // EVERYTHING ELSE
-                        // ==================
-
+                        // Everything else
                         .anyRequest()
                         .authenticated()
                 )
 
+                // -------------------------------------------------
+                // AUTH PROVIDER
+                // -------------------------------------------------
+
                 .authenticationProvider(
                         authenticationProvider()
                 )
+
+                // -------------------------------------------------
+                // JWT FILTER
+                // -------------------------------------------------
 
                 .addFilterBefore(
                         jwtAuthenticationFilter,

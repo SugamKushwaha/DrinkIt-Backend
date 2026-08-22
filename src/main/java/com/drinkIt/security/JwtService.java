@@ -28,6 +28,10 @@ public class JwtService {
         );
     }
 
+    // =====================================================
+    // GENERATE TOKEN
+    // =====================================================
+
     public String generateToken(String email) {
 
         Date now = new Date();
@@ -43,11 +47,19 @@ public class JwtService {
                 .compact();
     }
 
+    // =====================================================
+    // EXTRACT EMAIL
+    // =====================================================
+
     public String extractEmail(String token) {
 
         return extractAllClaims(token)
                 .getSubject();
     }
+
+    // =====================================================
+    // VALIDATE TOKEN
+    // =====================================================
 
     public boolean isTokenValid(
             String token,
@@ -68,6 +80,10 @@ public class JwtService {
         }
     }
 
+    // =====================================================
+    // CHECK EXPIRATION
+    // =====================================================
+
     private boolean isTokenExpired(
             String token
     ) {
@@ -76,6 +92,10 @@ public class JwtService {
                 .getExpiration()
                 .before(new Date());
     }
+
+    // =====================================================
+    // GET CLAIMS
+    // =====================================================
 
     private Claims extractAllClaims(
             String token

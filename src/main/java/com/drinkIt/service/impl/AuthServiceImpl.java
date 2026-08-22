@@ -1,5 +1,10 @@
 package com.drinkIt.service.impl;
 
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.drinkIt.dto.auth.AuthResponse;
 import com.drinkIt.dto.auth.LoginRequest;
 import com.drinkIt.dto.auth.RegisterRequest;
@@ -11,13 +16,6 @@ import com.drinkIt.security.JwtService;
 import com.drinkIt.service.AuthService;
 
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +33,15 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse register(
             RegisterRequest request
     ) {
+
+         String email =
+                request.getEmail()
+                        .trim()
+                        .toLowerCase();
+
+        String phone =
+                request.getPhone()
+                        .trim();
 
         if (userRepository.existsByEmail(
                 request.getEmail()

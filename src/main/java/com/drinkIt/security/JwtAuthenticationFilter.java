@@ -17,13 +17,10 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter
-        extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-
-    private final CustomUserDetailsService
-            userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(
@@ -38,75 +35,87 @@ public class JwtAuthenticationFilter
         String token = null;
         String email = null;
 
-        // ============================
-        // CHECK AUTHORIZATION HEADER
-        // ============================
+        // =====================================================
+        // 1. CHECK AUTHORIZATION HEADER
+        // =====================================================
 
         if (authorizationHeader != null
-                && authorizationHeader.startsWith(
-                        "Bearer "
-                )) {
+                && authorizationHeader.startsWith("Bearer ")) {
 
-            token =
-                    authorizationHeader.substring(7);
+            token = authorizationHeader.substring(7);
 
             try {
 
-                email =
-                        jwtService.extractEmail(token);
+                email = jwtService.extractEmail(token);
 
             } catch (Exception e) {
 
                 System.out.println(
-                        "Invalid JWT token"
+                        "JWT extraction failed: "
+                                + e.getMessage()
                 );
             }
         }
 
-        // ============================
-        // AUTHENTICATE USER
-        // ============================
+        // =====================================================
+        // 2. AUTHENTICATE USER
+        // =====================================================
 
         if (email != null
                 && SecurityContextHolder
                 .getContext()
                 .getAuthentication() == null) {
 
-            UserDetails userDetails =
-                    userDetailsService
-                            .loadUserByUsername(email);
+            try {
 
-            if (jwtService.isTokenValid(
-                    token,
-                    userDetails.getUsername()
-            )) {
+                UserDetails userDetails =
+                        userDetailsService
+                                .loadUserByUsername(email);
 
-                UsernamePasswordAuthenticationToken
-                        authentication =
+                // =================================================
+                // 3. VALIDATE JWT
+                // =================================================
 
-                        new UsernamePasswordAuthenticationToken(
+                if (jwtService.isTokenValid(
+                        token,
+                        userDetails.getUsername()
+                )) {
 
-                                userDetails,
+                    UsernamePasswordAuthenticationToken
+                            authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    userDetails.getAuthorities()
+                            );
 
-                                null,
+                    authentication.setDetails(
+                            new WebAuthenticationDetailsSource()
+                                    .buildDetails(request)
+                    );
 
-                                userDetails
-                                        .getAuthorities()
-                        );
+                    SecurityContextHolder
+                            .getContext()
+                            .setAuthentication(authentication);
 
-                authentication
-                        .setDetails(
-                                new WebAuthenticationDetailsSource()
-                                        .buildDetails(request)
-                        );
+                    System.out.println(
+                            "JWT Authentication successful: "
+                                    + email
+                    );
+                }
 
-                SecurityContextHolder
-                        .getContext()
-                        .setAuthentication(
-                                authentication
-                        );
+            } catch (Exception e) {
+
+                System.out.println(
+                        "JWT Authentication failed: "
+                                + e.getMessage()
+                );
             }
         }
+
+        // =====================================================
+        // 4. CONTINUE FILTER CHAIN
+        // =====================================================
 
         filterChain.doFilter(
                 request,

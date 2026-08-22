@@ -95,4 +95,24 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.CONFLICT)
                 .body(errors);
     }
+      @ExceptionHandler(
+            RuntimeException.class
+    )
+    public ResponseEntity<Map<String, String>>
+    handleRuntimeException(
+            RuntimeException ex
+    ) {
+
+        Map<String, String> errors =
+                new HashMap<>();
+
+        errors.put(
+                "general",
+                ex.getMessage()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(errors);
+ }
 }
