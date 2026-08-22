@@ -34,14 +34,9 @@ public class AuthServiceImpl implements AuthService {
             RegisterRequest request
     ) {
 
-         String email =
-                request.getEmail()
-                        .trim()
-                        .toLowerCase();
+         String email = request.getEmail().trim().toLowerCase();
 
-        String phone =
-                request.getPhone()
-                        .trim();
+        String phone =  request.getPhone().trim();
 
         if (userRepository.existsByEmail(
                 request.getEmail()
@@ -62,26 +57,14 @@ public class AuthServiceImpl implements AuthService {
         }
 
         User user = User.builder()
-
                 .name(request.getName())
-
                 .email(request.getEmail())
-
                 .phone(request.getPhone())
-
                 .password(
-                        passwordEncoder.encode(
-                                request.getPassword()
-                        )
-                )
-
-                /*
-                 * ALWAYS CUSTOMER
-                 */
+                        passwordEncoder.encode(request.getPassword())
+                          )
                 .role(Role.CUSTOMER)
-
                 .status(UserStatus.ACTIVE)
-
                 .build();
 
         User savedUser =

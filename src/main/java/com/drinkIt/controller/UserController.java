@@ -1,6 +1,7 @@
 package com.drinkIt.controller;
 
 import com.drinkIt.dto.user.UserResponse;
+import com.drinkIt.dto.user.UserUpdateRequest;
 import com.drinkIt.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -19,24 +20,26 @@ public class UserController {
     private final UserService userService;
 
    @GetMapping("/me")
-    public ResponseEntity<UserResponse> getCurrentUser(
-            Authentication authentication
-    ) {
+    public ResponseEntity<UserResponse> getCurrentUser(Authentication authentication ){
 
-        if (authentication == null
-                || !authentication.isAuthenticated()) {
-
+        if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity
                     .status(401)
                     .build();
         }
+        String email = authentication.getName();
 
-        String email =
-                authentication.getName();
-
-        UserResponse user =
-                userService.getCurrentUser(email);
+        UserResponse user = userService.getCurrentUser(email);
 
         return ResponseEntity.ok(user);
     }
+
+    @PutMapping("/me")
+    public UserResponse updateCurrentUser( Authentication authentication, @RequestBody UserUpdateRequest request) {
+
+        return userService.updateUser(
+                authentication.getName(),
+                request
+        );
+  }
 }
