@@ -1,8 +1,12 @@
 package com.drinkIt.controller;
 
+import com.drinkIt.dto.user.UserAddressSaveRequest;
+import com.drinkIt.dto.user.UserAddressUpdateRequest;
 import com.drinkIt.dto.user.UserResponse;
 import com.drinkIt.dto.user.UserUpdateRequest;
 import com.drinkIt.service.UserService;
+import com.drinkIt.dto.user.UserAddressResponse;
+
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,4 +46,36 @@ public class UserController {
                 request
         );
   }
+
+    @PostMapping("/addresses")
+    public ResponseEntity<UserAddressResponse> saveAddress(
+            @RequestBody UserAddressSaveRequest request,
+            Authentication authentication
+    ) {
+
+        UserAddressResponse response =
+                userService.saveAddress(
+                        request,
+                        authentication
+                );
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/addresses/{addressId}")
+    public ResponseEntity<UserAddressResponse> updateAddress(
+            @PathVariable Long addressId,
+            @RequestBody UserAddressUpdateRequest request,
+            Authentication authentication
+    ) {
+
+        UserAddressResponse response =
+                userService.updateAddress(
+                        addressId,
+                        request,
+                        authentication
+                );
+
+        return ResponseEntity.ok(response);
+    }
 }
