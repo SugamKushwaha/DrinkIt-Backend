@@ -18,5 +18,8 @@ public interface  UserService {
 
     UserAddressResponse updateAddress(Long addressId, UserAddressUpdateRequest request, Authentication authentication);
 
+    void deleteAddress(Long addressId, Authentication authentication);
+
+    
 
 }

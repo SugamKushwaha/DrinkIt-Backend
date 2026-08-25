@@ -173,7 +173,19 @@ public UserAddressResponse saveAddress(
 }
 
 
-   
+          @Override
+          public void deleteAddress( Long addressId, Authentication authentication) {
+
+             User user = userRepository
+                          .findByEmail(authentication.getName())
+                          .orElseThrow(() -> new RuntimeException("User not found"));
+
+            Address address = addressRepository
+                    .findByIdAndUser(addressId, user)
+                    .orElseThrow(() -> new RuntimeException("Address not found"));
+
+            addressRepository.delete(address);
+        }
 
 
 }

@@ -32,7 +32,6 @@ public class UserController {
                     .build();
         }
         String email = authentication.getName();
-
         UserResponse user = userService.getCurrentUser(email);
 
         return ResponseEntity.ok(user);
@@ -48,10 +47,7 @@ public class UserController {
   }
 
     @PostMapping("/addresses")
-    public ResponseEntity<UserAddressResponse> saveAddress(
-            @RequestBody UserAddressSaveRequest request,
-            Authentication authentication
-    ) {
+    public ResponseEntity<UserAddressResponse> saveAddress( @RequestBody UserAddressSaveRequest request, Authentication authentication) {
 
         UserAddressResponse response =
                 userService.saveAddress(
@@ -63,11 +59,7 @@ public class UserController {
     }
 
     @PutMapping("/addresses/{addressId}")
-    public ResponseEntity<UserAddressResponse> updateAddress(
-            @PathVariable Long addressId,
-            @RequestBody UserAddressUpdateRequest request,
-            Authentication authentication
-    ) {
+    public ResponseEntity<UserAddressResponse> updateAddress( @PathVariable Long addressId, @RequestBody UserAddressUpdateRequest request, Authentication authentication) {
 
         UserAddressResponse response =
                 userService.updateAddress(
@@ -78,4 +70,15 @@ public class UserController {
 
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/addresses/{addressId}")
+     public ResponseEntity<Void> deleteAddress( @PathVariable Long addressId, Authentication authentication) {
+
+         userService.deleteAddress(
+                 addressId,
+                 authentication
+         );
+
+         return ResponseEntity.noContent().build();
+     }
 }
