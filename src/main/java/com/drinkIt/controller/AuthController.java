@@ -30,21 +30,53 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(
-            @Valid @RequestBody RegisterRequest request
+            @Valid @RequestBody RegisterRequest request,
+            HttpServletResponse response
     ) {
 
-        return ResponseEntity.ok(
-                authService.register(request)
-        );
+        AuthResponse authResponse = authService.register(request);
+
+        setAuthCookie(response, authResponse.getToken());
+
+        return ResponseEntity.ok(authResponse);
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(
-            @Valid @RequestBody LoginRequest request
+            @Valid @RequestBody LoginRequest request,
+            HttpServletResponse response
     ) {
 
-        return ResponseEntity.ok(
-                authService.login(request)
+        AuthResponse authResponse = authService.login(request);
+
+        setAuthCookie(response, authResponse.getToken());
+
+        return ResponseEntity.ok(authResponse);
+    }
+
+    // =====================================================
+    // COOKIE HELPER
+    //
+    // secure(false) + sameSite("Lax") work for local dev
+    // (http://localhost). In production over HTTPS with the
+    // frontend on a different domain, use secure(true) and
+    // sameSite("None").
+    // =====================================================
+
+    private void setAuthCookie(HttpServletResponse response, String token) {
+
+        ResponseCookie cookie =
+                ResponseCookie.from("drinkit-token", token)
+                        .httpOnly(true)
+                        .secure(false)
+                        .path("/")
+                        .maxAge(24 * 60 * 60)
+                        .sameSite("Lax")
+                        .build();
+
+        response.addHeader(
+                HttpHeaders.SET_COOKIE,
+                cookie.toString()
         );
     }
 

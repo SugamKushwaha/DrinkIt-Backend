@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.drinkIt.security.CustomUserDetailsService;
 import com.drinkIt.security.JwtAuthenticationFilter;
@@ -28,9 +29,9 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
 
-    // =====================================================
+     private final CorsConfigurationSource corsConfigurationSource;
+
     // PASSWORD ENCODER
-    // =====================================================
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -38,9 +39,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // =====================================================
     // AUTHENTICATION PROVIDER
-    // =====================================================
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
@@ -57,9 +56,7 @@ public class SecurityConfig {
         return provider;
     }
 
-    // =====================================================
     // AUTHENTICATION MANAGER
-    // =====================================================
 
     @Bean
     public AuthenticationManager authenticationManager(
@@ -70,9 +67,7 @@ public class SecurityConfig {
                 .getAuthenticationManager();
     }
 
-    // =====================================================
     // SECURITY FILTER CHAIN
-    // =====================================================
 
     @Bean
     public SecurityFilterChain securityFilterChain(
@@ -81,15 +76,15 @@ public class SecurityConfig {
 
         http
 
-                // -------------------------------------------------
                 // CSRF
-                // -------------------------------------------------
 
                 .csrf(csrf -> csrf.disable())
 
-                // -------------------------------------------------
+                // CORS
+
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
+
                 // STATELESS JWT
-                // -------------------------------------------------
 
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(
@@ -97,9 +92,7 @@ public class SecurityConfig {
                         )
                 )
 
-                // -------------------------------------------------
                 // AUTHORIZATION
-                // -------------------------------------------------
 
                 .authorizeHttpRequests(auth -> auth
 
@@ -153,17 +146,13 @@ public class SecurityConfig {
                         .authenticated()
                 )
 
-                // -------------------------------------------------
                 // AUTH PROVIDER
-                // -------------------------------------------------
 
                 .authenticationProvider(
                         authenticationProvider()
                 )
 
-                // -------------------------------------------------
                 // JWT FILTER
-                // -------------------------------------------------
 
                 .addFilterBefore(
                         jwtAuthenticationFilter,

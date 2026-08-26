@@ -27,9 +27,7 @@ public class AdminController {
     private final DeliveryPartnerRequestService
             deliveryPartnerRequestService;
 
-    // ==========================
     // VENDOR REQUESTS
-    // ==========================
 
     @GetMapping("/vendor-requests")
     public ResponseEntity<
@@ -82,9 +80,7 @@ public class AdminController {
         );
     }
 
-    // ==========================
     // DELIVERY REQUESTS
-    // ==========================
 
     @GetMapping("/delivery-partner-requests")
     public ResponseEntity<

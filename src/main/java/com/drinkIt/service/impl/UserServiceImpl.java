@@ -1,17 +1,19 @@
 package com.drinkIt.service.impl;
 
+import java.util.List;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import com.drinkIt.dto.user.UserAddressResponse;
 import com.drinkIt.dto.user.UserAddressSaveRequest;
 import com.drinkIt.dto.user.UserAddressUpdateRequest;
 import com.drinkIt.dto.user.UserResponse;
 import com.drinkIt.dto.user.UserUpdateRequest;
-import com.drinkIt.entity.User;
-import com.drinkIt.repository.UserRepository;
-import com.drinkIt.dto.user.UserAddressResponse;
 import com.drinkIt.entity.Address;
+import com.drinkIt.entity.User;
 import com.drinkIt.repository.AddressRepository;
+import com.drinkIt.repository.UserRepository;
 import com.drinkIt.security.CurrentUserService;
 import com.drinkIt.service.UserService;
 
@@ -186,6 +188,35 @@ public UserAddressResponse saveAddress(
 
             addressRepository.delete(address);
         }
+
+
+        @Override
+public List<UserAddressResponse> getAddresses(
+        Authentication authentication
+) {
+
+    User user = userRepository
+            .findByEmail(authentication.getName())
+            .orElseThrow(() ->
+                    new RuntimeException("User not found")
+            );
+
+    List<Address> addresses =
+            addressRepository.findByUser(user);
+
+    return addresses.stream()
+            .map(address -> new UserAddressResponse(
+                    address.getId(),
+                    address.getAddressType(),
+                    address.getFullName(),
+                    address.getPhone(),
+                    address.getAddressLine(),
+                    address.getCity(),
+                    address.getState(),
+                    address.getPincode()
+            ))
+            .toList();
+}
 
 
 }

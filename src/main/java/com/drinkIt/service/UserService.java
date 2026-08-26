@@ -1,12 +1,14 @@
 package com.drinkIt.service;
 
+import java.util.List;
+
 import org.springframework.security.core.Authentication;
 
-import com.drinkIt.dto.user.UserResponse;
-import com.drinkIt.dto.user.UserUpdateRequest;
 import com.drinkIt.dto.user.UserAddressResponse;
 import com.drinkIt.dto.user.UserAddressSaveRequest;
 import com.drinkIt.dto.user.UserAddressUpdateRequest;
+import com.drinkIt.dto.user.UserResponse;
+import com.drinkIt.dto.user.UserUpdateRequest;
 
 public interface  UserService {
 
@@ -20,6 +22,6 @@ public interface  UserService {
 
     void deleteAddress(Long addressId, Authentication authentication);
 
-    
+    List<UserAddressResponse> getAddresses( Authentication authentication );
 
 }
