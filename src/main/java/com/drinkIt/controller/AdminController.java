@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.drinkIt.dto.delivery.DeliveryPartnerRequestResponse;
+import com.drinkIt.dto.user.UserResponse;
 import com.drinkIt.dto.vendor.VendorRequestResponse;
+import com.drinkIt.service.AdminService;
 import com.drinkIt.service.DeliveryPartnerRequestService;
 import com.drinkIt.service.VendorRequestService;
 
@@ -24,15 +26,20 @@ public class AdminController {
 
     private final VendorRequestService vendorRequestService;
 
-    private final DeliveryPartnerRequestService
-            deliveryPartnerRequestService;
+    private final DeliveryPartnerRequestService deliveryPartnerRequestService;
+
+    private final AdminService adminService;
+
+@GetMapping("/users")
+public ResponseEntity<List<UserResponse>> getUsers() {
+    return ResponseEntity.ok(
+        adminService.allCustomers() );
+}
 
     // VENDOR REQUESTS
 
     @GetMapping("/vendor-requests")
-    public ResponseEntity<
-            List<VendorRequestResponse>
-            > getVendorRequests() {
+    public ResponseEntity<List<VendorRequestResponse>> getVendorRequests() {
 
         return ResponseEntity.ok(
                 vendorRequestService

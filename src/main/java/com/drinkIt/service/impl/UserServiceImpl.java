@@ -30,9 +30,9 @@ public class UserServiceImpl implements UserService {
     private final CurrentUserService currentUserService;
 
     @Override
-    public UserResponse getCurrentUser(String email)
-     {
-User user = userRepository.findByEmail(email).orElseThrow( () -> new RuntimeException( "User not found" ));
+    public UserResponse getCurrentUser(String email){
+
+        User user = userRepository.findByEmail(email).orElseThrow( () -> new RuntimeException( "User not found" ));
 
         return new UserResponse(
              user.getId(),

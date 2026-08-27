@@ -24,4 +24,5 @@ public interface  UserService {
 
     List<UserAddressResponse> getAddresses( Authentication authentication );
 
+
 }
