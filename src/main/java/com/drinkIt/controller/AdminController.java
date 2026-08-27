@@ -30,13 +30,26 @@ public class AdminController {
 
     private final AdminService adminService;
 
+// Get All Users
+
 @GetMapping("/users")
 public ResponseEntity<List<UserResponse>> getUsers() {
     return ResponseEntity.ok(
         adminService.allCustomers() );
 }
 
-    // VENDOR REQUESTS
+
+// Get All Vendors
+
+@GetMapping("/vendors")
+public ResponseEntity<List<UserResponse>> getVendors() {
+
+    return ResponseEntity.ok(
+            adminService.allVendors()
+    );
+}
+
+    // Get All VENDOR REQUESTS
 
     @GetMapping("/vendor-requests")
     public ResponseEntity<List<VendorRequestResponse>> getVendorRequests() {
@@ -46,6 +59,8 @@ public ResponseEntity<List<UserResponse>> getUsers() {
                         .getPendingRequests()
         );
     }
+
+    // Get Request By id
 
     @GetMapping("/vendor-requests/{id}")
     public ResponseEntity<VendorRequestResponse>
@@ -59,6 +74,8 @@ public ResponseEntity<List<UserResponse>> getUsers() {
         );
     }
 
+    // Approve Vendor Request
+ 
     @PutMapping("/vendor-requests/{id}/approve")
     public ResponseEntity<VendorRequestResponse>
     approveVendor(
@@ -70,6 +87,9 @@ public ResponseEntity<List<UserResponse>> getUsers() {
                         .approve(id)
         );
     }
+
+
+    // Reject Vendor Request
 
     @PutMapping("/vendor-requests/{id}/reject")
     public ResponseEntity<VendorRequestResponse>

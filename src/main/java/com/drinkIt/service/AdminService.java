@@ -7,4 +7,6 @@ import com.drinkIt.dto.user.UserResponse;
 public interface AdminService {
     
     List<UserResponse> allCustomers();
+
+    List<UserResponse> allVendors();
 }

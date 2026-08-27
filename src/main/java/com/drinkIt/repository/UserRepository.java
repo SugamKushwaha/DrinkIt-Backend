@@ -20,6 +20,8 @@ public interface UserRepository
     boolean existsByPhone(String phone);
 
     List<User> findByRole(Role role);
+
+    
     
     
 }
