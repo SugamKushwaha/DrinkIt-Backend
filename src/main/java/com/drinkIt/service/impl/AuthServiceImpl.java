@@ -30,49 +30,49 @@ public class AuthServiceImpl implements AuthService {
     private final JwtService jwtService;
 
     @Override
-    public AuthResponse register(
-            RegisterRequest request
-    ) {
+public AuthResponse register(RegisterRequest request) {
 
-         String email = request.getEmail().trim().toLowerCase();
+    String email = request.getEmail()
+            .trim()
+            .toLowerCase();
 
-        String phone =  request.getPhone().trim();
+    String phone = request.getPhone()
+            .trim();
 
-        if (userRepository.existsByEmail(
-                request.getEmail()
-        )) {
-
-            throw new RuntimeException(
-                    "Email already registered"
-            );
-        }
-
-        if (userRepository.existsByPhone(
-                request.getPhone()
-        )) {
-
-            throw new RuntimeException(
-                    "Phone already registered"
-            );
-        }
-
-        User user = User.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .phone(request.getPhone())
-                .password(
-                        passwordEncoder.encode(request.getPassword())
-                          )
-                .role(Role.CUSTOMER)
-                .status(UserStatus.ACTIVE)
-                .build();
-
-        User savedUser =
-                userRepository.save(user);
-
-        return createAuthResponse(savedUser);
+    // Check email
+    if (userRepository.existsByEmail(email)) {
+        throw new RuntimeException(
+                "Email already registered"
+        );
     }
 
+    // Check phone
+    if (userRepository.existsByPhone(phone)) {
+        throw new RuntimeException(
+                "Phone already registered"
+        );
+    }
+
+    // Create user
+    User user = User.builder()
+            .name(request.getName().trim())
+            .email(email)
+            .phone(phone)
+            .password(
+                    passwordEncoder.encode(
+                            request.getPassword()
+                    )
+            )
+            .role(Role.CUSTOMER)
+            .status(UserStatus.ACTIVE)
+            .build();
+
+    // Save user
+    User savedUser = userRepository.save(user);
+
+    // Generate JWT
+    return createAuthResponse(savedUser);
+}
     @Override
     public AuthResponse login(
             LoginRequest request

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.drinkIt.dto.admin.VendorResponse;
 import com.drinkIt.dto.delivery.DeliveryPartnerRequestResponse;
 import com.drinkIt.dto.user.UserResponse;
 import com.drinkIt.dto.vendor.VendorRequestResponse;
@@ -42,10 +43,23 @@ public ResponseEntity<List<UserResponse>> getUsers() {
 // Get All Vendors
 
 @GetMapping("/vendors")
-public ResponseEntity<List<UserResponse>> getVendors() {
+public ResponseEntity<List<VendorResponse>> getVendors() {
 
     return ResponseEntity.ok(
             adminService.allVendors()
+    );
+}
+
+
+// Get single vendor by id
+
+@GetMapping("/vendors/{id}")
+public ResponseEntity<VendorResponse> getVendor(
+        @PathVariable Long id
+) {
+
+    return ResponseEntity.ok(
+            adminService.getVendor(id)
     );
 }
 

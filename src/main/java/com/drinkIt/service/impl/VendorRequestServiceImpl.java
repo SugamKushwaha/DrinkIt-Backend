@@ -8,10 +8,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.drinkIt.dto.vendor.VendorRequestResponse;
 import com.drinkIt.entity.User;
+import com.drinkIt.entity.Vendor;
 import com.drinkIt.entity.VendorRequest;
 import com.drinkIt.enums.RequestStatus;
 import com.drinkIt.enums.Role;
 import com.drinkIt.repository.UserRepository;
+import com.drinkIt.repository.VendorRepository;
 import com.drinkIt.repository.VendorRequestRepository;
 import com.drinkIt.service.VendorRequestService;
 
@@ -26,6 +28,8 @@ public class VendorRequestServiceImpl
     private final UserRepository userRepository;
 
     private final VendorRequestRepository vendorRequestRepository;
+
+    private final VendorRepository vendorRepository;
 
     @Override
     public VendorRequestResponse apply(
@@ -133,15 +137,58 @@ public class VendorRequestServiceImpl
          * Customer becomes Vendor automatically.
          */
 
-        user.setRole(Role.VENDOR);
+         // Customer → Vendor
+    user.setRole(Role.VENDOR);
 
-        userRepository.save(user);
+    userRepository.save(user);
 
-        request.setStatus(RequestStatus.APPROVED);
+    // Create Vendor
+    Vendor vendor = Vendor.builder()
 
-        request.setProcessedAt(
-                LocalDateTime.now()
-        );
+            .user(user)
+
+            .businessName(
+                    request.getBusinessName()
+            )
+
+            .businessAddress(
+                    request.getBusinessAddress()
+            )
+
+            .city(
+                    request.getCity()
+            )
+
+            .state(
+                    request.getState()
+            )
+             .pincode(
+                    request.getPincode()
+            )
+
+            .gstNumber(
+                    request.getGstNumber()
+            )
+
+            .licenseNumber(
+                    request.getLicenseNumber()
+            )
+
+            .status("ACTIVE")
+
+            .createdAt(LocalDateTime.now())
+
+            .build();
+              vendorRepository.save(vendor);
+
+    // Update request
+    request.setStatus(
+            RequestStatus.APPROVED
+    );
+
+    request.setProcessedAt(
+            LocalDateTime.now()
+    );
 
         return convert(
                 vendorRequestRepository.save(request)
