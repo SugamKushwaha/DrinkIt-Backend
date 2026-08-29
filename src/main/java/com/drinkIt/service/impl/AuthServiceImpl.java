@@ -11,6 +11,8 @@ import com.drinkIt.dto.auth.RegisterRequest;
 import com.drinkIt.entity.User;
 import com.drinkIt.enums.Role;
 import com.drinkIt.enums.UserStatus;
+import com.drinkIt.exception.EmailAlreadyExistsException;
+import com.drinkIt.exception.PhoneAlreadyExistsException;
 import com.drinkIt.repository.UserRepository;
 import com.drinkIt.security.JwtService;
 import com.drinkIt.service.AuthService;
@@ -41,15 +43,15 @@ public AuthResponse register(RegisterRequest request) {
 
     // Check email
     if (userRepository.existsByEmail(email)) {
-        throw new RuntimeException(
-                "Email already registered"
+        throw new EmailAlreadyExistsException(
+                "This email is already registered. Please login instead."
         );
     }
 
     // Check phone
     if (userRepository.existsByPhone(phone)) {
-        throw new RuntimeException(
-                "Phone already registered"
+        throw new PhoneAlreadyExistsException(
+                "This phone number is already registered."
         );
     }
 

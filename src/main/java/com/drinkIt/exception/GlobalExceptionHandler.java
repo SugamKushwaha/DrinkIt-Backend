@@ -62,6 +62,28 @@ public class GlobalExceptionHandler {
 
 
     // ==========================================
+    // PHONE ALREADY EXISTS
+    // ==========================================
+
+    @ExceptionHandler(PhoneAlreadyExistsException.class)
+    public ResponseEntity<Map<String, String>> handlePhoneAlreadyExists(
+            PhoneAlreadyExistsException ex
+    ) {
+
+        Map<String, String> errors = new HashMap<>();
+
+        errors.put(
+                "phone",
+                ex.getMessage()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(errors);
+    }
+
+
+    // ==========================================
     // DATABASE CONSTRAINT ERROR
     // ==========================================
 
