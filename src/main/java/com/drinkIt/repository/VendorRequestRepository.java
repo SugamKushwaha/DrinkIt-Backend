@@ -22,4 +22,14 @@ public interface VendorRequestRepository
             Long userId,
             RequestStatus status
     );
+
+       boolean existsByGstNumberAndStatusNot(
+            String gstNumber,
+            RequestStatus status
+    );
+
+    boolean existsByLicenseNumberAndStatusNot(
+            String licenseNumber,
+            RequestStatus status
+    );
 }

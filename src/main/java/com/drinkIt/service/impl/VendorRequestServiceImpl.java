@@ -22,8 +22,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class VendorRequestServiceImpl
-        implements VendorRequestService {
+public class VendorRequestServiceImpl implements VendorRequestService {
 
     private final UserRepository userRepository;
 
@@ -39,6 +38,13 @@ public class VendorRequestServiceImpl
 
         User user = getUser(userId);
 
+        if (user.getRole() == Role.VENDOR) {
+
+        throw new RuntimeException(
+                "You are already a vendor."
+        );
+    }
+
         if (user.getRole() != Role.CUSTOMER) {
 
             throw new RuntimeException(
@@ -46,29 +52,64 @@ public class VendorRequestServiceImpl
             );
         }
 
-        if (vendorRequestRepository
-                .existsByUserIdAndStatus(
-                        userId,
-                        RequestStatus.PENDING
-                )) {
 
-            throw new RuntimeException(
-                    "Vendor request already pending"
-            );
-        }
+   String gstNumber = request.getGstNumber();
+
+    if (gstNumber != null) {
+        gstNumber = gstNumber.trim().toUpperCase();
+    }
+
+    String licenseNumber = request.getLicenseNumber();
+
+    if (licenseNumber != null) {
+        licenseNumber = licenseNumber.trim().toUpperCase();
+    }
+
+        if (vendorRequestRepository
+            .existsByUserIdAndStatus(
+                    userId,
+                    RequestStatus.PENDING
+            )) {
+
+        throw new RuntimeException(
+                "Application already exists. Your vendor application is already pending."
+        );
+    }
+
+      if (gstNumber != null
+            && !gstNumber.isBlank()
+            && vendorRequestRepository
+                    .existsByGstNumberAndStatusNot(
+                            gstNumber,
+                            RequestStatus.REJECTED
+                    )) {
+
+        throw new RuntimeException(
+                "Application already exists with this GST number."
+        );
+    }
+
+      if (gstNumber != null
+            && !gstNumber.isBlank()
+            && vendorRequestRepository
+                    .existsByGstNumberAndStatusNot(
+                            gstNumber,
+                            RequestStatus.REJECTED
+                    )) {
+
+        throw new RuntimeException(
+                "Application already exists with this GST number."
+        );
+    }
 
         VendorRequest vendorRequest =
                 VendorRequest.builder()
 
                         .user(user)
 
-                        .businessName(
-                                request.getBusinessName()
-                        )
+                        .businessName(request.getBusinessName() )
 
-                        .businessAddress(
-                                request.getBusinessAddress()
-                        )
+                        .businessAddress(request.getBusinessAddress() )
 
                         .city(request.getCity())
 
@@ -76,11 +117,9 @@ public class VendorRequestServiceImpl
 
                         .pincode(request.getPincode())
 
-                        .gstNumber(request.getGstNumber())
+                        .gstNumber(gstNumber)
 
-                        .licenseNumber(
-                                request.getLicenseNumber()
-                        )
+                        .licenseNumber(licenseNumber)
 
                         .status(RequestStatus.PENDING)
 
