@@ -45,6 +45,8 @@ public class VendorRequest {
     @Column(nullable = false)
     private String businessName;
 
+    private String businessType;
+
     @Column(nullable = false)
     private String businessAddress;
 

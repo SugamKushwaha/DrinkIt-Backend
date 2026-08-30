@@ -10,9 +10,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class VendorRequestResponse {
 
     private Long requestId;
@@ -27,6 +27,8 @@ public class VendorRequestResponse {
 
     private String businessName;
 
+    private String businessType;
+
     private String businessAddress;
 
     private String city;
@@ -40,4 +42,6 @@ public class VendorRequestResponse {
     private String licenseNumber;
 
     private RequestStatus status;
+
+    private String rejectionReason;
 }

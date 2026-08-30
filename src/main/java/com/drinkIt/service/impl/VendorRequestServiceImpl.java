@@ -109,6 +109,8 @@ public class VendorRequestServiceImpl implements VendorRequestService {
 
                         .businessName(request.getBusinessName() )
 
+                        .businessType(request.getBusinessType())
+
                         .businessAddress(request.getBusinessAddress() )
 
                         .city(request.getCity())
@@ -302,13 +304,11 @@ public class VendorRequestServiceImpl implements VendorRequestService {
 
                 .phone(user.getPhone())
 
-                .businessName(
-                        request.getBusinessName()
-                )
+                .businessName(request.getBusinessName())
 
-                .businessAddress(
-                        request.getBusinessAddress()
-                )
+                .businessType(request.getBusinessType())
+
+                .businessAddress(request.getBusinessAddress())
 
                 .city(request.getCity())
 
