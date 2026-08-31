@@ -2,6 +2,7 @@ package com.drinkIt.service;
 
 import java.util.List;
 
+import com.drinkIt.dto.admin.DeliveryPartnerResponse;
 import com.drinkIt.dto.admin.VendorResponse;
 import com.drinkIt.dto.user.UserResponse;
 
@@ -12,4 +13,9 @@ public interface AdminService {
     List<VendorResponse> allVendors();
 
     VendorResponse getVendor(Long id);
+
+    List<DeliveryPartnerResponse> allDeliveryPartners();
+
+
+    DeliveryPartnerResponse getDeliveryPartner(Long id);
 }

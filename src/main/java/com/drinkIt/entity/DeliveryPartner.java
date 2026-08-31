@@ -2,9 +2,9 @@ package com.drinkIt.entity;
 
 import java.time.LocalDateTime;
 
-import org.hibernate.annotations.CreationTimestamp;
-
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -18,25 +18,28 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "vendors")
+@Table(name = "delivery_partners")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Vendor {
+public class DeliveryPartner {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "user_id",
+            nullable = false,
+            unique = true
+    )
     private User user;
 
-    private String businessName;
-
-    private String businessAddress;
+    @Column(nullable = false)
+    private String address;
 
     private String city;
 
@@ -44,12 +47,19 @@ public class Vendor {
 
     private String pincode;
 
-    private String gstNumber;
+    @Column(nullable = false)
+    private String vehicleType;
 
-    private String licenseNumber;
+    @Column(nullable = false)
+    private String vehicleNumber;
 
+    @Column(nullable = false)
+    private String drivingLicenseNumber;
+
+    private String aadhaarNumber;
+
+    @Column(nullable = false)
     private String status;
 
-    @CreationTimestamp
     private LocalDateTime createdAt;
 }

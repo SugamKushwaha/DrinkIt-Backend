@@ -4,11 +4,14 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.drinkIt.dto.admin.DeliveryPartnerResponse;
 import com.drinkIt.dto.admin.VendorResponse;
 import com.drinkIt.dto.user.UserResponse;
+import com.drinkIt.entity.DeliveryPartner;
 import com.drinkIt.entity.User;
 import com.drinkIt.entity.Vendor;
 import com.drinkIt.enums.Role;
+import com.drinkIt.repository.DeliveryPartnerRepository;
 import com.drinkIt.repository.UserRepository;
 import com.drinkIt.repository.VendorRepository;
 import com.drinkIt.service.AdminService;
@@ -22,6 +25,8 @@ public class AdminServiceImpl implements AdminService {
     private final UserRepository userRepository;
 
      private final VendorRepository vendorRepository;
+
+     private final DeliveryPartnerRepository deliveryPartnerRepository;
 
 
      @Override
@@ -58,18 +63,30 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public VendorResponse getVendor(Long id) {
 
-        Vendor vendor = vendorRepository
-                .findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "Vendor not found"
-                        )
-                );
+        Vendor vendor = vendorRepository.findById(id).orElseThrow(() ->new RuntimeException("Vendor not found" ));
 
         return mapVendor(vendor);
     }
 
+    @Override
+    public List<DeliveryPartnerResponse>
+    allDeliveryPartners() {
+
+        return deliveryPartnerRepository
+                .findAll()
+                .stream()
+                .map(this::mapDeliveryPartner)
+                .toList();
+    }
   
+      @Override
+    public DeliveryPartnerResponse
+    getDeliveryPartner(Long id) {
+
+        DeliveryPartner partner= deliveryPartnerRepository.findById(id).orElseThrow(() ->new RuntimeException("Delivery partner not found"  ));
+
+        return mapDeliveryPartner(partner);
+    }
     // Map Vendor
 
      private VendorResponse mapVendor(Vendor vendor) {
@@ -79,51 +96,44 @@ public class AdminServiceImpl implements AdminService {
         return VendorResponse.builder()
 
                 .id(vendor.getId())
-
                 .userId(user.getId())
-
                 .name(user.getName())
-
                 .email(user.getEmail())
-
                 .phone(user.getPhone())
+                .businessName(vendor.getBusinessName())
+                .businessAddress(vendor.getBusinessAddress())
+                .city(vendor.getCity())
+                .state(vendor.getState())
+                .pincode(vendor.getPincode() )
+                .gstNumber(vendor.getGstNumber())
+                .licenseNumber(vendor.getLicenseNumber())
+                .status(vendor.getStatus())
+                .createdAt(vendor.getCreatedAt())
+                .build();
+    }
 
-                .businessName(
-                        vendor.getBusinessName()
-                )
 
-                .businessAddress(
-                        vendor.getBusinessAddress()
-                )
+     private DeliveryPartnerResponse mapDeliveryPartner(DeliveryPartner partner) {
 
-                .city(
-                        vendor.getCity()
-                )
+        User user = partner.getUser();
 
-                .state(
-                        vendor.getState()
-                )
+        return DeliveryPartnerResponse
+                .builder()
 
-                .pincode(
-                        vendor.getPincode()
-                )
-
-                .gstNumber(
-                        vendor.getGstNumber()
-                )
-
-                .licenseNumber(
-                        vendor.getLicenseNumber()
-                )
-
-                .status(
-                        vendor.getStatus()
-                )
-
-                .createdAt(
-                        vendor.getCreatedAt()
-                )
-
+                .id(partner.getId())
+                .userId(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .address(partner.getAddress() )
+                .city(partner.getCity())
+                .state(partner.getState())
+                .pincode( partner.getPincode())
+                .vehicleType(partner.getVehicleType())
+                .vehicleNumber(partner.getVehicleNumber())
+                .drivingLicenseNumber(partner.getDrivingLicenseNumber())
+                .aadhaarNumber(partner.getAadhaarNumber())
+                .status(partner.getStatus() )
                 .build();
     }
 }
