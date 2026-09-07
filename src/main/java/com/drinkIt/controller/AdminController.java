@@ -3,13 +3,18 @@ package com.drinkIt.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.drinkIt.dto.admin.AdminRequest;
+import com.drinkIt.dto.admin.AdminResponse;
 import com.drinkIt.dto.admin.DeliveryPartnerResponse;
 import com.drinkIt.dto.admin.VendorResponse;
 import com.drinkIt.dto.delivery.DeliveryPartnerRequestResponse;
@@ -201,4 +206,74 @@ public ResponseEntity<DeliveryPartnerResponse> getDeliveryPartner( @PathVariable
                         )
         );
     }
+
+
+
+    // admin module
+
+    @PostMapping("/admins")
+public ResponseEntity<AdminResponse>
+createAdmin(
+
+        @RequestBody
+        AdminRequest request
+
+) {
+
+    return ResponseEntity.ok(
+
+            adminService
+                    .createAdmin(request)
+
+    );
+
+}
+
+@GetMapping("/admins")
+public ResponseEntity<List<AdminResponse>>
+getAdmins() {
+
+    return ResponseEntity.ok(
+
+            adminService
+                    .getAllAdmins()
+
+    );
+
+}
+
+@GetMapping("/admins/{id}")
+public ResponseEntity<AdminResponse>
+getAdmin(
+
+        @PathVariable Long id
+
+) {
+
+    return ResponseEntity.ok(
+
+            adminService
+                    .getAdmin(id)
+
+    );
+
+}
+
+@DeleteMapping("/admins/{id}")
+public ResponseEntity<Void>
+deleteAdmin(
+
+        @PathVariable Long id
+
+) {
+
+    adminService
+            .deleteAdmin(id);
+
+
+    return ResponseEntity
+            .noContent()
+            .build();
+
+}
 }

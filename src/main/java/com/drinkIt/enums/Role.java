@@ -4,5 +4,8 @@ public enum  Role {
      CUSTOMER,
     VENDOR,
     DELIVERY_PARTNER,
-    ADMIN
+    ADMIN,
+    PRODUCT_ADMIN,
+    PARTNER_ADMIN,
+    SUPER_ADMIN
 }
