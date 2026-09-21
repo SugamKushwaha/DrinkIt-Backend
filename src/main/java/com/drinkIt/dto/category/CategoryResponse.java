@@ -11,7 +11,15 @@ public class CategoryResponse {
 
     private Long id;
 
+    /*
+     * Admin frontend uses name.
+     */
     private String name;
+
+    /*
+     * Customer CategoryCard uses title.
+     */
+    private String title;
 
     private String image;
 

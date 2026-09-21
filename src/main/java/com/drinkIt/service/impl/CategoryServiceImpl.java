@@ -4,12 +4,13 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.drinkIt.dto.category.CategoryRequest;
 import com.drinkIt.dto.category.CategoryResponse;
 import com.drinkIt.entity.Category;
 import com.drinkIt.repository.CategoryRepository;
 import com.drinkIt.service.CategoryService;
+import com.drinkIt.service.ImageStorageService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,32 +22,41 @@ public class CategoryServiceImpl
 
     private final CategoryRepository categoryRepository;
 
+    private final ImageStorageService imageStorageService;
+
     // =====================================================
     // CREATE
     // =====================================================
 
     @Override
     public CategoryResponse create(
-            CategoryRequest request
+            String name,
+            MultipartFile image,
+            Boolean active
     ) {
 
-        validate(request);
+        validateName(name);
+        validateImage(image);
 
         if (categoryRepository
-                .existsByNameIgnoreCase(request.getName())) {
+                .existsByNameIgnoreCase(name.trim())) {
 
             throw new RuntimeException(
                     "Category already exists"
             );
         }
 
+        String imagePath =
+                imageStorageService
+                        .saveCategoryImage(image);
+
         Category category =
                 Category.builder()
-                        .name(request.getName().trim())
-                        .image(request.getImage())
+                        .name(name.trim())
+                        .image(imagePath)
                         .active(
-                                request.getActive() != null
-                                        ? request.getActive()
+                                active != null
+                                        ? active
                                         : true
                         )
                         .build();
@@ -92,7 +102,9 @@ public class CategoryServiceImpl
 
     @Override
     @Transactional(readOnly = true)
-    public CategoryResponse getById(Long id) {
+    public CategoryResponse getById(
+            Long id
+    ) {
 
         return map(findCategory(id));
     }
@@ -104,19 +116,22 @@ public class CategoryServiceImpl
     @Override
     public CategoryResponse update(
             Long id,
-            CategoryRequest request
+            String name,
+            MultipartFile image,
+            Boolean active
     ) {
 
-        validate(request);
+        validateName(name);
 
         Category category =
                 findCategory(id);
 
+        // Check duplicate name
         if (!category.getName()
-                .equalsIgnoreCase(request.getName())
+                .equalsIgnoreCase(name.trim())
                 && categoryRepository
                         .existsByNameIgnoreCase(
-                                request.getName()
+                                name.trim()
                         )) {
 
             throw new RuntimeException(
@@ -125,17 +140,34 @@ public class CategoryServiceImpl
         }
 
         category.setName(
-                request.getName().trim()
+                name.trim()
         );
 
-        category.setImage(
-                request.getImage()
-        );
+        // Only replace image when
+        // admin selected a new image
+        if (image != null
+                && !image.isEmpty()) {
+
+            String oldImage =
+                    category.getImage();
+
+            String newImage =
+                    imageStorageService
+                            .saveCategoryImage(image);
+
+            category.setImage(
+                    newImage
+            );
+
+            // Delete old image
+            imageStorageService
+                    .deleteImage(oldImage);
+        }
 
         category.setActive(
-                request.getActive() != null
-                        ? request.getActive()
-                        : true
+                active != null
+                        ? active
+                        : category.getActive()
         );
 
         return map(
@@ -148,35 +180,64 @@ public class CategoryServiceImpl
     // =====================================================
 
     @Override
-    public void delete(Long id) {
+    public void delete(
+            Long id
+    ) {
 
         Category category =
                 findCategory(id);
 
+        String image =
+                category.getImage();
+
         categoryRepository.delete(category);
+
+        // Delete image from server
+        imageStorageService
+                .deleteImage(image);
     }
 
     // =====================================================
-    // VALIDATION
+    // VALIDATE NAME
     // =====================================================
 
-    private void validate(
-            CategoryRequest request
+    private void validateName(
+            String name
     ) {
 
-        if (request.getName() == null
-                || request.getName().isBlank()) {
+        if (name == null
+                || name.isBlank()) {
 
             throw new RuntimeException(
                     "Category name is required"
             );
         }
+    }
 
-        if (request.getImage() == null
-                || request.getImage().isBlank()) {
+    // =====================================================
+    // VALIDATE IMAGE
+    // =====================================================
+
+    private void validateImage(
+            MultipartFile image
+    ) {
+
+        if (image == null
+                || image.isEmpty()) {
 
             throw new RuntimeException(
                     "Category image is required"
+            );
+        }
+
+        String contentType =
+                image.getContentType();
+
+        if (contentType == null
+                || !contentType.startsWith("image/")) {
+
+            throw new RuntimeException(
+                    "Only image files are allowed"
             );
         }
     }
@@ -185,7 +246,9 @@ public class CategoryServiceImpl
     // FIND
     // =====================================================
 
-    private Category findCategory(Long id) {
+    private Category findCategory(
+            Long id
+    ) {
 
         return categoryRepository
                 .findById(id)

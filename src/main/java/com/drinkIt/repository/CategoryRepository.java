@@ -12,7 +12,16 @@ public interface CategoryRepository
 
     List<Category> findByActiveTrue();
 
-    Optional<Category> findByNameIgnoreCase(String name);
+    Optional<Category> findByNameIgnoreCase(
+            String name
+    );
 
-    boolean existsByNameIgnoreCase(String name);
+    boolean existsByNameIgnoreCase(
+            String name
+    );
+
+    boolean existsByNameIgnoreCaseAndIdNot(
+            String name,
+            Long id
+    );
 }
