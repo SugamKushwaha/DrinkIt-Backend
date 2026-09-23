@@ -53,4 +53,11 @@ public interface ProductRepository
             String category,
             ProductStatus status
     );
+
+    
+    // PUBLIC - POPULAR PRODUCTS
+
+     List<Product> findByPopularTrueAndStatus(
+            ProductStatus status
+    );
 }

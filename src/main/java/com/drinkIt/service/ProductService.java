@@ -74,4 +74,6 @@ public interface ProductService {
     List<ProductResponse> getActiveProductsByCategory(
             String category
     );
+
+    List<ProductResponse> getPopularProducts();
 }

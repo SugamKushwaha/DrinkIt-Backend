@@ -8,28 +8,16 @@ import com.drinkIt.dto.category.CategoryResponse;
 
 public interface CategoryService {
 
-    CategoryResponse create(
-            String name,
-            MultipartFile image,
-            Boolean active
+    CategoryResponse uploadImage(
+            String categoryName,
+            MultipartFile image
     );
 
-    List<CategoryResponse> getAll();
+    List<CategoryResponse> getAllImages();
 
-    List<CategoryResponse> getActive();
-
-    CategoryResponse getById(
-            Long id
+    CategoryResponse getImageByCategoryName(
+            String categoryName
     );
 
-    CategoryResponse update(
-            Long id,
-            String name,
-            MultipartFile image,
-            Boolean active
-    );
-
-    void delete(
-            Long id
-    );
+    void deleteImage(Long id);
 }

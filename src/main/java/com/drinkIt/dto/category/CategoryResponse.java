@@ -2,28 +2,24 @@ package com.drinkIt.dto.category;
 
 import java.time.LocalDateTime;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class CategoryResponse {
 
     private Long id;
 
-    /*
-     * Admin frontend uses name.
-     */
-    private String name;
+    private String categoryName;
 
-    /*
-     * Customer CategoryCard uses title.
-     */
-    private String title;
+    private String imageUrl;
 
-    private String image;
-
-    private Boolean active;
+    private String fileName;
 
     private LocalDateTime createdAt;
 

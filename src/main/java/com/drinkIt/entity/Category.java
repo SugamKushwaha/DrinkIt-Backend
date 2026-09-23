@@ -10,7 +10,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,51 +29,37 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(
-            nullable = false,
-            unique = true
-    )
+    @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(
-            nullable = false,
-            length = 500
-    )
+    @Column(nullable = false, length = 500)
     private String image;
 
-    @Column(
-            nullable = false
-    )
+    @Column(nullable = false)
     private Boolean active;
 
-    @Column(
-            nullable = false
-    )
+    @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(
-            nullable = false
-    )
+    @Column(nullable = false)
     private LocalDateTime updatedAt;
+
 
     @PrePersist
     public void onCreate() {
 
-        LocalDateTime now =
-                LocalDateTime.now();
-
-        createdAt = now;
-        updatedAt = now;
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
 
         if (active == null) {
             active = true;
         }
     }
 
+
     @PreUpdate
     public void onUpdate() {
 
-        updatedAt =
-                LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 }

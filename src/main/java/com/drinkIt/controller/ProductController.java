@@ -58,6 +58,19 @@ public class ProductController {
 
 
     // =====================================================
+    // POPULAR TONIGHT
+    // =====================================================
+
+    @GetMapping("/popular")
+    public ResponseEntity<List<ProductResponse>>
+    getPopularProducts() {
+
+        return ResponseEntity.ok(
+                productService.getPopularProducts()
+        );
+    }
+
+    // =====================================================
     // CATEGORY
     // =====================================================
 

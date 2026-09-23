@@ -21,7 +21,11 @@ public class FileStorageConfig
             ResourceHandlerRegistry registry
     ) {
 
-        Path uploadPath =
+        // =====================================================
+        // PRODUCT FILES
+        // =====================================================
+
+        Path productPath =
                 Paths.get(
                         uploadDirectory
                 )
@@ -33,7 +37,27 @@ public class FileStorageConfig
                 "/uploads/products/**"
         )
         .addResourceLocations(
-                uploadPath.toUri().toString()
+                productPath.toUri().toString()
+        );
+
+
+        // =====================================================
+        // CATEGORY FILES
+        // =====================================================
+
+        Path categoryPath =
+                Paths.get(
+                        "uploads/categories"
+                )
+                .toAbsolutePath()
+                .normalize();
+
+
+        registry.addResourceHandler(
+                "/uploads/categories/**"
+        )
+        .addResourceLocations(
+                categoryPath.toUri().toString()
         );
     }
 }

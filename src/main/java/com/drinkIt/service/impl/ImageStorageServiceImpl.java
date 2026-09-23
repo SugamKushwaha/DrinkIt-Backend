@@ -19,64 +19,56 @@ public class ImageStorageServiceImpl
     private final Path categoryUploadPath =
             Paths.get("uploads/categories");
 
-    @Override
-    public String saveCategoryImage(
-            MultipartFile file
-    ) {
 
-        if (file == null || file.isEmpty()) {
+            @Override
+public String saveCategoryImage(MultipartFile file) {
 
-            throw new RuntimeException(
-                    "Category image is required"
-            );
-        }
-
-        try {
-
-            // Create folder if it does not exist
-            Files.createDirectories(
-                    categoryUploadPath
-            );
-
-            String originalName =
-                    file.getOriginalFilename();
-
-            String extension = "";
-
-            if (originalName != null
-                    && originalName.contains(".")) {
-
-                extension =
-                        originalName.substring(
-                                originalName.lastIndexOf(".")
-                        );
-            }
-
-            String fileName =
-                    UUID.randomUUID()
-                            + extension;
-
-            Path targetPath =
-                    categoryUploadPath
-                            .resolve(fileName);
-
-            Files.copy(
-                    file.getInputStream(),
-                    targetPath,
-                    StandardCopyOption.REPLACE_EXISTING
-            );
-
-            // This value will be stored in database
-            return "/uploads/categories/" + fileName;
-
-        } catch (IOException e) {
-
-            throw new RuntimeException(
-                    "Failed to save category image",
-                    e
-            );
-        }
+    if (file == null || file.isEmpty()) {
+        throw new RuntimeException("Category image is required");
     }
+
+    try {
+
+        Path uploadPath = Paths.get("uploads/categories");
+
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        String originalFileName = file.getOriginalFilename();
+
+        String extension = "";
+
+        if (originalFileName != null &&
+                originalFileName.contains(".")) {
+
+            extension = originalFileName.substring(
+                    originalFileName.lastIndexOf(".")
+            );
+        }
+
+        String fileName =
+                UUID.randomUUID() + extension;
+
+        Path filePath =
+                uploadPath.resolve(fileName);
+
+        Files.copy(
+                file.getInputStream(),
+                filePath,
+                StandardCopyOption.REPLACE_EXISTING
+        );
+
+        return "/uploads/categories/" + fileName;
+
+    } catch (IOException e) {
+
+        throw new RuntimeException(
+                "Failed to save category image",
+                e
+        );
+    }
+}
 
     @Override
     public void deleteImage(

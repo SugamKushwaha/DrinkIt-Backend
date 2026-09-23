@@ -532,6 +532,23 @@ Product product = Product.builder()
                 .toList();
     }
 
+    // =====================================================
+    // CUSTOMER - POPULAR PRODUCTS
+    // =====================================================
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProductResponse> getPopularProducts() {
+
+        return productRepository
+                .findByPopularTrueAndStatus(
+                        ProductStatus.ACTIVE
+                )
+                .stream()
+                .map(this::map)
+                .toList();
+    }
+
 
     // =====================================================
     // UPDATE PRODUCT
@@ -789,4 +806,7 @@ Product product = Product.builder()
 
                 .build();
     }
+
+
+   
 }

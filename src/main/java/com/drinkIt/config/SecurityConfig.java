@@ -141,6 +141,15 @@ public class SecurityConfig {
                                 "/api/delivery-partner-requests/**"
                         ).authenticated()
 
+                        // Category APIs
+                       .requestMatchers( "/api/categories/**").permitAll()
+
+                        // Category admin upload
+                       .requestMatchers( "/api/admin/categories/**").hasRole("ADMIN")
+
+                       // Uploaded files
+                       .requestMatchers( "/uploads/**").permitAll()
+
                         // Everything else
                         .anyRequest()
                         .authenticated()
